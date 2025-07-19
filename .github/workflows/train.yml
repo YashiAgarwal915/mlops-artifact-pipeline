@@ -1,0 +1,62 @@
+# A descriptive name for your workflow
+name: Phase 1 - Model Training
+
+# -----------------
+# TRIGGER
+# -----------------
+# This workflow will run automatically on every push to the 'classification_branch'.
+on:
+  push:
+    branches:
+      - classification_branch
+
+# -----------------
+# JOBS
+# -----------------
+# A workflow is made up of one or more jobs that can run sequentially or in parallel.
+jobs:
+  # We will name our single job 'train_model'
+  train_model:
+    # The type of virtual machine to run the job on. 'ubuntu-latest' is a common, reliable choice.
+    runs-on: ubuntu-latest
+
+    # -----------------
+    # STEPS
+    # -----------------
+    # A sequence of tasks that will be executed as part of the 'train_model' job.
+    steps:
+      # Step 1: Check out the repository's code
+      # This action checks out your repository onto the runner, allowing you to run scripts from it.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up a Python environment
+      # This action sets up a specific version of Python for you to use.
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      # Step 3: Install dependencies
+      # This step uses pip to install all packages listed in your requirements.txt file.
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run the training script
+      # This executes your Python script. The script should generate the 'model_train.pkl' file.
+      - name: Run training script
+        run: python src/train.py
+
+      # Step 5: Upload the model artifact
+      # This is the most important step for this phase. It takes the generated model file
+      # and saves it as a GitHub artifact, which can be downloaded or used by other jobs.
+      - name: Upload model artifact
+        uses: actions/upload-artifact@v4
+        with:
+          # The name of the artifact as it will appear in GitHub.
+          name: trained-model
+          # The path to the file(s) to upload. Since our script saves the model
+          # in the root directory, this is the correct path.
+          path: model_train.pkl
