@@ -1,1 +1,30 @@
-# This workflow is for Phase 2 - Testing
+name: Phase 2 - Pytest Testing
+
+on:
+  push:
+    branches:
+      - test_branch
+
+jobs:
+
+  run_pytest:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Pytest
+        run: pytest
