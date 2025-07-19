@@ -6,8 +6,11 @@ import os
 
 print("--- Training Script Started ---")
 
-# --- 1. Loading Configuration ---
-config_path = '../config/config.json'
+# --- 1. Loading Configuration (Robust Path Handling) ---
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+config_path = os.path.join(script_dir, '..', 'config', 'config.json')
+
 print(f"Loading configuration from: {config_path}")
 with open(config_path, 'r') as f:
     config = json.load(f)
@@ -26,8 +29,9 @@ model = LogisticRegression(**config)
 model.fit(X, y)
 print("Model training complete.")
 
-# --- 4. Saving Model ---
-model_output_path = '../model_train.pkl'
+# --- 4. Saving Model (Robust Path Handling) ---
+model_output_path = os.path.join(script_dir, '..', 'model_train.pkl')
+
 print(f"Saving trained model to: {model_output_path}")
 joblib.dump(model, model_output_path)
 
